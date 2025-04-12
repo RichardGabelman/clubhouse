@@ -15,6 +15,9 @@ app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.statusCode || 500).send(err.message);
 });
+app.all("*", (req, res) => {
+  res.status(404).send("<h1>404! Page not found</h1>");
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
