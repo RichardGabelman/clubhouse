@@ -6,6 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
+const { body, validationResult } = require('express-validator');
 
 const app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -66,16 +67,30 @@ app.post(
 
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
-app.post("/sign-up", async (req, res, next) => {
-  try {
-   const hashedPassword = await bcrypt.hash(req.body.password, 10);
-   await pool.query("insert into users (username, password) values ($1, $2)", [req.body.username, hashedPassword]);
-   res.redirect("/");
-  } catch (error) {
-     console.error(error);
-     next(error);
+app.post(
+  "/sign-up",
+  body("confirm").custom((value, { req }) => {
+    return value === req.body.password;
+  }),
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
- });
+    
+    try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      await pool.query(
+        "insert into users (username, password) values ($1, $2)",
+        [req.body.username, hashedPassword]
+      );
+      res.redirect("/");
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+);
 
 app.get("/log-out", (req, res, next) => {
   req.logout((err) => {
