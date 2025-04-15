@@ -6,7 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
-const { body, validationResult } = require('express-validator');
+const { body, validationResult } = require("express-validator");
 
 const app = express();
 app.set("views", path.join(__dirname, "views"));
@@ -69,15 +69,17 @@ app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
 app.post(
   "/sign-up",
-  body("confirm").custom((value, { req }) => {
-    return value === req.body.password;
-  }),
+  body("confirm")
+    .custom((value, { req }) => {
+      return value === req.body.password;
+    })
+    .withMessage("Passwords do not match!"),
   async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).render("sign-up-form", { errors: errors.array() });
     }
-    
+
     try {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       await pool.query(
