@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Become An Admin</title>
+</head>
+<body>
+  <h1>Become an admin</h1>
+  <% if (locals.errors) {%>
+    <ul>
+      <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+  <form action="/become-an-admin" method="POST">
+    <label for="code">Code</label>
+    <input id="code" name="code" placeholder="code" type="text" />
+    <button type="submit">Become Admin</button>
+  </form>
+</body>
+</html>

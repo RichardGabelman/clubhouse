@@ -7,6 +7,11 @@
   <body>
     <% if (locals.user) {%>
     <h1>WELCOME BACK <%= user.username %></h1>
+    <% if (!locals.user.membership && !locals.user.admin) { %>
+    <a href="/become-a-member">Become a member</a>
+    <% } %> <% if (!locals.user.admin) { %>
+    <a href="/become-an-admin">Become an admin</a>
+    <% } %>
     <a href="/create-message">Create a new message</a>
     <a href="/log-out">LOG OUT</a>
     <% } else { %>
@@ -18,16 +23,24 @@
       <input id="password" name="password" type="password" />
       <button type="submit">Log In</button>
     </form>
+    <a href="/sign-up">Sign up instead</a>
     <%}%>
     <ul>
       <% messages.forEach((message) => { %>
-        <div style="border: 1px solid black; max-width: max-content; padding: 20px; margin-bottom: 10px;">
-          <% if (locals.user && locals.user.membership) {%>
-          <h2><%- message.username %></h2>
-          <p><%- message.time %></p>
-          <% } %>
-          <p><%- message.message %></p>
-        </div>
+      <div
+        style="
+          border: 1px solid black;
+          max-width: max-content;
+          padding: 20px;
+          margin-bottom: 10px;
+        "
+      >
+        <% if (locals.user && (locals.user.membership || locals.user.admin)) {%>
+        <h2><%- message.username %></h2>
+        <p><%- message.time %></p>
+        <% } %>
+        <p><%- message.message %></p>
+      </div>
       <% }); %>
     </ul>
   </body>

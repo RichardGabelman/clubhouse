@@ -139,6 +139,38 @@ app.post("/become-a-member", async (req, res, next) => {
   }
 });
 
+app.get("/become-an-admin", (req, res) => {
+  res.render("become-admin", { user: req.user });
+});
+
+app.post("/become-an-admin", async (req, res, next) => {
+  try {
+    const userCode = req.body.code;
+    if (userCode == process.env.ADMIN_CODE) {
+      console.log("successfully became an admin!");
+      await pool.query("UPDATE users SET admin = true WHERE id = ($1)", [
+        req.user.id,
+      ]);
+      const result = await pool.query("SELECT * FROM users WHERE id = $1", [
+        req.user.id,
+      ]);
+      const updatedUser = result.rows[0];
+
+      req.login(updatedUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+      });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 app.get("/create-message", (req, res) => {
   res.render("create-message", { user: req.user });
 });
