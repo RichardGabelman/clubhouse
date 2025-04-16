@@ -7,9 +7,7 @@
   <body>
     <% if (locals.user) {%>
     <h1>WELCOME BACK <%= user.username %></h1>
-    <% if (locals.user.membership) { %>
-      <a href="/create-message">Create a new message</a>
-    <% } %>
+    <a href="/create-message">Create a new message</a>
     <a href="/log-out">LOG OUT</a>
     <% } else { %>
     <h1>please log in</h1>
@@ -21,5 +19,16 @@
       <button type="submit">Log In</button>
     </form>
     <%}%>
+    <ul>
+      <% messages.forEach((message) => { %>
+        <div style="border: 1px solid black; max-width: max-content; padding: 20px; margin-bottom: 10px;">
+          <% if (locals.user && locals.user.membership) {%>
+          <h2><%- message.username %></h2>
+          <p><%- message.time %></p>
+          <% } %>
+          <p><%- message.message %></p>
+        </div>
+      <% }); %>
+    </ul>
   </body>
 </html>

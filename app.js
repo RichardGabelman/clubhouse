@@ -157,8 +157,9 @@ app.post("/create-message", async (req, res, next) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.render("index", { user: req.user });
+app.get("/", async (req, res) => {
+  let messages = await pool.query("SELECT messages.*, users.username FROM messages JOIN users ON messages.author_id = users.id");
+  res.render("index", { user: req.user, messages: messages.rows });
 });
 
 app.use((err, req, res, next) => {
