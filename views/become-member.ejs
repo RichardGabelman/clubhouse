@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Become A Member</title>
+</head>
+<body>
+  <h1>Become a member</h1>
+  <% if (locals.errors) {%>
+    <ul>
+      <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+  <form action="/become-member" method="POST">
+    <label for="code">Code</label>
+    <input id="code" name="code" placeholder="code" type="text" />
+    <button type="submit">Become Member</button>
+  </form>
+</body>
+</html>

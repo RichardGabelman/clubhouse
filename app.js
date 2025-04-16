@@ -108,6 +108,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/become-a-member", (req, res) => {
+  res.render("become-member", { user: req.user });
+});
+
 app.get("/", (req, res) => {
   res.render("index", { user: req.user });
 });
