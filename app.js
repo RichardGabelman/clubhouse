@@ -143,6 +143,19 @@ app.get("/create-message", (req, res) => {
   res.render("create-message", { user: req.user });
 });
 
+app.post("/create-message", async (req, res, next) => {
+  try {
+    await pool.query("INSERT INTO messages VALUES ($1, $2)", [
+      req.user.id,
+      req.body.message,
+    ]);
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 app.get("/", (req, res) => {
   res.render("index", { user: req.user });
 });
