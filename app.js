@@ -145,10 +145,11 @@ app.get("/create-message", (req, res) => {
 
 app.post("/create-message", async (req, res, next) => {
   try {
-    await pool.query("INSERT INTO messages VALUES ($1, $2)", [
+    await pool.query("INSERT INTO messages (author_id, message) VALUES ($1, $2)", [
       req.user.id,
       req.body.message,
     ]);
+    console.log("Successfully created new message!");
     res.redirect("/");
   } catch (error) {
     console.error(error);
