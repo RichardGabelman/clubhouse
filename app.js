@@ -207,10 +207,24 @@ app.post("/create-message", async (req, res, next) => {
   }
 });
 
+app.post("/delete-message/:id", async (req, res, next) => {
+  if (!(req.user && req.user.admin)) {
+    return res.status(403).send("Forbidden");
+  }
+  const messageId = req.params.id;
+  try {
+    await pool.query("DELETE FROM messages WHERE id = $1", [messageId]);
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
 app.get("/", async (req, res) => {
   let messages;
   if (req.user && (req.user.membership || req.user.admin)) {
-    messages = await pool.query("SELECT messages.*, users.username FROM messages JOIN users ON messages.author_id = users.id");
+    messages = await pool.query("SELECT messages.id, messages.*, users.username FROM messages JOIN users ON messages.author_id = users.id");
   } else {
     messages = await pool.query("SELECT message FROM messages");
   }

@@ -40,6 +40,15 @@
         <p><%- message.time %></p>
         <% } %>
         <p><%- message.message %></p>
+        <% if (locals.user && locals.user.admin) {%>
+        <form
+          action="/delete-message/<%= message.id %>"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit">❌</button>
+        </form>
+        <% } %>
       </div>
       <% }); %>
     </ul>
