@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Message</title>
+</head>
+<body>
+  <h1>Create Message</h1>
+  <% if (locals.errors) {%>
+    <ul>
+      <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  <% } %>
+  <% if (!locals.user || !locals.user.membership) {%>
+    <h2>No access!</h2>
+    <a href="/">Leave</a>
+    <% } else { %>
+  <form action="/create-message" method="POST">
+    <label for="code">Code</label>
+    <input id="code" name="code" placeholder="code" type="text" />
+    <button type="submit">Become Member</button>
+  </form>
+  <%}%>
+</body>
+</html>

@@ -139,6 +139,10 @@ app.post("/become-a-member", async (req, res, next) => {
   }
 });
 
+app.get("/create-message", (req, res) => {
+  res.render("create-message", { user: req.user });
+});
+
 app.get("/", (req, res) => {
   res.render("index", { user: req.user });
 });
