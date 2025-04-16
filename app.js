@@ -112,6 +112,33 @@ app.get("/become-a-member", (req, res) => {
   res.render("become-member", { user: req.user });
 });
 
+app.post("/become-a-member", async (req, res, next) => {
+  try {
+    const userCode = req.body.code;
+    if (userCode == process.env.MEMBER_CODE) {
+      console.log("successfully became a member!");
+      await pool.query("UPDATE users SET membership = true WHERE id = ($1)", [
+        req.user.id,
+      ]);
+
+      const result = await pool.query("SELECT * FROM users WHERE id = $1", [
+        req.user.id,
+      ]);
+      const updatedUser = result.rows[0];
+
+      req.login(updatedUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+      });
+    }
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 app.get("/", (req, res) => {
   res.render("index", { user: req.user });
 });
