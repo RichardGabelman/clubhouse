@@ -136,9 +136,11 @@ app.post("/become-a-member", async (req, res, next) => {
         if (err) {
           return next(err);
         }
+        res.redirect("/");
       });
+    } else {
+      res.redirect("/");
     }
-    res.redirect("/");
   } catch (error) {
     console.error(error);
     next(error);
