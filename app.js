@@ -109,10 +109,16 @@ app.use((req, res, next) => {
 });
 
 app.get("/become-a-member", (req, res) => {
+  if (!req.user) {
+    res.redirect("/");
+  }
   res.render("become-member", { user: req.user });
 });
 
 app.post("/become-a-member", async (req, res, next) => {
+  if (!req.user) {
+    res.redirect("/");
+  }
   try {
     const userCode = req.body.code;
     if (userCode == process.env.MEMBER_CODE) {
@@ -140,10 +146,16 @@ app.post("/become-a-member", async (req, res, next) => {
 });
 
 app.get("/become-an-admin", (req, res) => {
+  if (!req.user) {
+    res.redirect("/");
+  }
   res.render("become-admin", { user: req.user });
 });
 
 app.post("/become-an-admin", async (req, res, next) => {
+  if (!req.user) {
+    res.redirect("/");
+  }
   try {
     const userCode = req.body.code;
     if (userCode == process.env.ADMIN_CODE) {
@@ -172,10 +184,16 @@ app.post("/become-an-admin", async (req, res, next) => {
 });
 
 app.get("/create-message", (req, res) => {
+  if (!req.user) {
+    res.redirect("/");
+  }
   res.render("create-message", { user: req.user });
 });
 
 app.post("/create-message", async (req, res, next) => {
+  if (!req.user) {
+    return res.status(403).send("Forbidden");
+  }
   try {
     await pool.query("INSERT INTO messages (author_id, message) VALUES ($1, $2)", [
       req.user.id,
@@ -190,7 +208,12 @@ app.post("/create-message", async (req, res, next) => {
 });
 
 app.get("/", async (req, res) => {
-  let messages = await pool.query("SELECT messages.*, users.username FROM messages JOIN users ON messages.author_id = users.id");
+  let messages;
+  if (req.user && (req.user.membership || req.user.admin)) {
+    messages = await pool.query("SELECT messages.*, users.username FROM messages JOIN users ON messages.author_id = users.id");
+  } else {
+    messages = await pool.query("SELECT message FROM messages");
+  }
   res.render("index", { user: req.user, messages: messages.rows });
 });
 
