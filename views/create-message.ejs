@@ -13,11 +13,11 @@
       <% }); %>
     </ul>
   <% } %>
-  <% if (!locals.user || !locals.user.membership) {%>
+  <% if (!locals.user) {%>
     <h2>No access!</h2>
     <a href="/">Leave</a>
     <% } else { %>
-  <form action="/create-message" method="POST">
+  <form action="/message/create-message" method="POST">
     <label for="message">New Message</label>
     <input id="message" name="message" placeholder="Type your message" type="text" />
     <button type="submit">Send Message</button>

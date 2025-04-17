@@ -8,22 +8,22 @@
     <% if (locals.user) {%>
     <h1>WELCOME BACK <%= user.username %></h1>
     <% if (!locals.user.membership && !locals.user.admin) { %>
-    <a href="/become-a-member">Become a member</a>
+    <a href="/users/become-a-member">Become a member</a>
     <% } %> <% if (!locals.user.admin) { %>
-    <a href="/become-an-admin">Become an admin</a>
+    <a href="/users/become-an-admin">Become an admin</a>
     <% } %>
-    <a href="/create-message">Create a new message</a>
-    <a href="/log-out">LOG OUT</a>
+    <a href="/message/create-message">Create a new message</a>
+    <a href="/auth/log-out">LOG OUT</a>
     <% } else { %>
     <h1>please log in</h1>
-    <form action="/log-in" method="POST">
+    <form action="/auth/log-in" method="POST">
       <label for="username">Username</label>
       <input id="username" name="username" placeholder="username" type="text" />
       <label for="password">Password</label>
       <input id="password" name="password" type="password" />
       <button type="submit">Log In</button>
     </form>
-    <a href="/sign-up">Sign up instead</a>
+    <a href="/auth/sign-up">Sign up instead</a>
     <%}%>
     <ul>
       <% messages.forEach((message) => { %>
@@ -42,7 +42,7 @@
         <p><%- message.message %></p>
         <% if (locals.user && locals.user.admin) {%>
         <form
-          action="/delete-message/<%= message.id %>"
+          action="/message/delete-message/<%= message.id %>"
           method="POST"
           style="display: inline"
         >
